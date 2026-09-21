@@ -32,7 +32,7 @@ final class EloquentPricingRuleRepository implements PricingRuleRepository
     public function listSkus(): array
     {
         return $this->records()
-            ->map(fn (SkuPricing $record) => ['sku' => $record->sku, 'label' => $record->label])
+            ->map(fn(SkuPricing $record) => ['sku' => $record->sku, 'label' => $record->label])
             ->all();
     }
 

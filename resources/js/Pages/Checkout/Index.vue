@@ -42,9 +42,9 @@ function reset(): void {
 </script>
 
 <template>
-    <Head title="Checkout" />
 
     <div class="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 p-6">
+        <Head title="Checkout" />
         <header>
             <h1 class="text-2xl font-semibold text-gray-800">
                 Supermarket Checkout

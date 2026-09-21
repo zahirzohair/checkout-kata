@@ -13,7 +13,7 @@ class ScanItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'sku' => ['required', 'string', 'max:10', 'regex:/^[A-Za-z0-9\-]+$/', Rule::exists('sku_pricings', 'sku')],
+            'sku' => ['required', 'string', 'max:10', 'regex:/^[A-Za-z0-9\-]+$/'],
         ];
     }
 }
