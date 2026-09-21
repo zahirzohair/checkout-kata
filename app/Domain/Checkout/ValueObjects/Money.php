@@ -47,8 +47,8 @@ final class Money
         return $this->cents === $other->cents;
     }
 
-    // e.g. 130 -> "€1.30". Single currency, no locale — the kata doesn't need more.
-    public function format(string $currencySymbol = '€'): string
+    // e.g. 130 -> "$1.30". Single currency, no locale — the kata doesn't need more.
+    public function format(string $currencySymbol = '$'): string
     {
         return sprintf('%s%s', $currencySymbol, number_format($this->cents / 100, 2));
     }
