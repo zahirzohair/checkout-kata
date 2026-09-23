@@ -80,7 +80,7 @@ class CheckoutFlowTest extends TestCase
 
         $response = $this->get(route('checkout.index'));
 
-        $response->assertInertia(fn($page) => $page->where('totalCents', 190));
+        $response->assertInertia(fn($page) => $page->where('totalCents', 171));
     }
 
     public function test_scanning_an_unknown_sku_is_rejected_and_does_not_change_the_total(): void

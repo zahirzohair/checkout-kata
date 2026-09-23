@@ -36,6 +36,27 @@ class CheckoutServiceTest extends TestCase
         app(CheckoutService::class)->scan('Z');
     }
 
+    public function test_scanning_a_and_b_applies_ten_percent_off_the_basket(): void
+    {
+        SkuPricing::query()->create(['sku' => 'A', 'strategy' => PricingStrategy::Unit, 'unit_price_cents' => 50]);
+        SkuPricing::query()->create(['sku' => 'B', 'strategy' => PricingStrategy::Unit, 'unit_price_cents' => 30]);
+
+        $service = app(CheckoutService::class);
+        $service->scan('A');
+        $service->scan('B');
+
+        $this->assertSame(72, $service->current()->total()->cents());
+    }
+
+    public function test_scanning_only_a_does_not_apply_the_basket_offer(): void
+    {
+        SkuPricing::query()->create(['sku' => 'A', 'strategy' => PricingStrategy::Unit, 'unit_price_cents' => 50]);
+
+        app(CheckoutService::class)->scan('A');
+
+        $this->assertSame(50, app(CheckoutService::class)->current()->total()->cents());
+    }
+
     public function test_reset_clears_the_basket(): void
     {
         SkuPricing::query()->create(['sku' => 'A', 'strategy' => PricingStrategy::Unit, 'unit_price_cents' => 50]);

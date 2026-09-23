@@ -5,6 +5,7 @@ namespace App\Services\Checkout;
 use App\Domain\Checkout\CheckOut;
 use App\Domain\Checkout\Contracts\PricingRuleRepository;
 use App\Domain\Checkout\Exceptions\UnknownSkuException;
+use App\Domain\Checkout\Offers\PercentOffBasketWhenSkusPresent;
 use Illuminate\Contracts\Session\Session;
 
 // Keeps one checkout's scanned items in the session, between requests.
@@ -19,7 +20,9 @@ final class CheckoutService
 
     public function current(): CheckOut
     {
-        return new CheckOut($this->rules, $this->scannedCounts());
+        return new CheckOut($this->rules, $this->scannedCounts(), [
+            new PercentOffBasketWhenSkusPresent(['A', 'B'], percent: 10),
+        ]);
     }
 
     /**

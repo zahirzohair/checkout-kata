@@ -33,6 +33,11 @@ final class Money
         return new self($this->cents + $other->cents);
     }
 
+    public function subtract(Money $other): self
+    {
+        return new self($this->cents - $other->cents);
+    }
+
     public function multiply(int $quantity): self
     {
         if ($quantity < 0) {
@@ -40,6 +45,16 @@ final class Money
         }
 
         return new self($this->cents * $quantity);
+    }
+
+    // Floor to whole cents — never hand back a fraction of a cent.
+    public function percent(int $percent): self
+    {
+        if ($percent < 0 || $percent > 100) {
+            throw new \InvalidArgumentException('Percent must be between 0 and 100.');
+        }
+
+        return new self(intdiv($this->cents * $percent, 100));
     }
 
     public function equals(Money $other): bool

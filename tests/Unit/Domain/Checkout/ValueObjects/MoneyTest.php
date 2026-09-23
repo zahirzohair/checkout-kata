@@ -26,10 +26,35 @@ class MoneyTest extends TestCase
         $this->assertSame(80, $total->cents());
     }
 
+    public function test_subtract_removes_the_other_amount(): void
+    {
+        $this->assertSame(70, Money::fromCents(100)->subtract(Money::fromCents(30))->cents());
+    }
+
+    public function test_subtract_rejects_going_negative(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        Money::fromCents(10)->subtract(Money::fromCents(11));
+    }
+
     public function test_multiply_scales_by_quantity(): void
     {
         $this->assertSame(150, Money::fromCents(50)->multiply(3)->cents());
         $this->assertSame(0, Money::fromCents(50)->multiply(0)->cents());
+    }
+
+    public function test_percent_floors_to_whole_cents(): void
+    {
+        $this->assertSame(8, Money::fromCents(80)->percent(10)->cents());
+        $this->assertSame(11, Money::fromCents(115)->percent(10)->cents());
+    }
+
+    public function test_percent_rejects_out_of_range_values(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        Money::fromCents(100)->percent(101);
     }
 
     public function test_multiply_rejects_a_negative_quantity(): void

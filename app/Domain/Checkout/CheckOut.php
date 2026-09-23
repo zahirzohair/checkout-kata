@@ -2,6 +2,7 @@
 
 namespace App\Domain\Checkout;
 
+use App\Domain\Checkout\Contracts\BasketOffer;
 use App\Domain\Checkout\Contracts\PricingRuleRepository;
 use App\Domain\Checkout\Exceptions\UnknownSkuException;
 use App\Domain\Checkout\ValueObjects\Money;
@@ -15,10 +16,12 @@ final class CheckOut
 
     /**
      * @param  array<string, int>  $initialCounts  SKU => quantity already scanned
+     * @param  list<BasketOffer>  $offers
      */
     public function __construct(
         private readonly PricingRuleRepository $rules,
         array $initialCounts = [],
+        private readonly array $offers = [],
     ) {
         foreach ($initialCounts as $sku => $quantity) {
             $sku = Sku::fromString($sku)->value;
@@ -46,13 +49,19 @@ final class CheckOut
 
     public function total(): Money
     {
-        $total = Money::zero();
+        $subtotal = Money::zero();
 
         foreach ($this->counts as $sku => $quantity) {
-            $total = $total->add($this->rules->ruleFor($sku)->priceFor($quantity));
+            $subtotal = $subtotal->add($this->rules->ruleFor($sku)->priceFor($quantity));
         }
 
-        return $total;
+        $discount = Money::zero();
+
+        foreach ($this->offers as $offer) {
+            $discount = $discount->add($offer->discount($this->counts, $subtotal));
+        }
+
+        return $subtotal->subtract($discount);
     }
 
     /**
